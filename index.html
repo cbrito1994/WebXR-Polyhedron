@@ -13,8 +13,8 @@
         import { ARButton } from 'https://unpkg.com/three@0.126.0/examples/jsm/webxr/ARButton.js';
 
         let camera, scene, renderer;
-        let mesh;
-
+        let mesh, mesh2;
+        
         const init = () => {
             const container = document.createElement('div');
             document.body.appendChild(container);
@@ -35,8 +35,8 @@
 
             // Light
             const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
-            light.position.set(0.5, 1, 0.25);
-            scene.add(light);
+			light.position.set(0.5, 1, 0.25);
+			scene.add(light);
 
             // Polyhedron
             const geometry = new THREE.IcosahedronGeometry(0.1, 1); // radius and detail(# of vertices)
@@ -47,9 +47,18 @@
                 transparent: 1,
                 opacity: 0.8
             });
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.set(0, 0, -0.5);
+            mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(0.2, 0, -0.5);
             scene.add(mesh);
+
+            // Add a second shape, a torus
+            const geometry2 = new THREE.TorusGeometry(0.15, 0.05, 12, 50);
+            const material2 = new THREE.MeshBasicMaterial({
+                color: new THREE.Color("rgb(253,253,150)")
+            });
+            mesh2 = new THREE.Mesh(geometry2, material2);
+            mesh2.position.set(-0.2, 0, -1);
+            scene.add(mesh2);
 
             // Add the AR button to the DOM
             const button = ARButton.createButton(renderer);
@@ -71,12 +80,19 @@
             renderer.setAnimationLoop(render);
         }
 
-        const render = () => {
-            renderer.render(scene, camera)
+        const rotateObjects = () => {
+            mesh.rotation.y = mesh.rotation.y - 0.01;
+            mesh2.rotation.x = mesh2.rotation.x - 0.04;
         }
-            
+
+        const render = () => {
+            rotateObjects()
+            renderer.render(scene, camera);
+        }
+         
         init();
         animate();
+        
     </script>
 </body>
 </html>
